@@ -1,77 +1,32 @@
-# Demo project · Devon & Cornwall PBI User Group
+# Working with AI to Build Dashboards People Understand
 
-Demos for *Working with AI to Build Dashboards People Understand*.
-Source: `..\Data video games\vgchartz-2024.csv` (64,016 rows, 14 columns). All models point to this path.
+Material from a live demo session for the Devon & Cornwall Power BI User Group, showing how to build a Power BI report end-to-end with an AI coding agent (Claude Code) instead of building it by hand: turning one flat CSV export into a star-schema model with measures, a themed report and interactive navigation.
 
-## Presentation: three files
+The dataset is video game sales (`vgchartz-2024.csv`, ~64,000 rows) — not included in this repo, see [Data](#data) below.
 
-For the session itself you only use the `Presentation\` folder:
+## What's in this repo
 
-| File | Contents | Use |
-|---|---|---|
-| `Demo live.pbip` | copy of Demo 1 before: 1 flat table, Start and demo pages without results | **Demo in this one**, demo 1 to 8 in a row |
-| `Demo final.pbip` | copy of Demo 8 after: everything done | Show the end result |
-| `Demo tested.pbip` | Demo live after the test run of 27-10-2026: star schema, measures, genre pages and the arcade genre tooltip | Show what was already tested |
-
-1. Open `Demo live.pbip` and click **Refresh** (the data isn't stored in the files).
-2. Claude connects with `pbi connect`. After every Desktop restart Claude connects again (new port).
-3. Commit after every successful demo, so you can go back to the last good point.
-4. If a demo gets stuck: open `Demo N before.pbip` from the demo folder below and continue there.
-
-Note: after Power Query changes (demo 1) and report changes (demos 3 to 8), Desktop has to reload the project.
-
-**After a session:** reset `Demo live` to the clean start (tag `demo-live-start`):
-
-```powershell
-git restore --source=demo-live-start -- "Presentation/Demo live.pbip" "Presentation/Demo live.Report" "Presentation/Demo live.SemanticModel"
-git clean -fd -- "Presentation/Demo live.Report" "Presentation/Demo live.SemanticModel"
-```
-
-A plain `git restore` from the last commit is not enough: the hourly auto-backup also commits test work.
-
-## Safety net: one folder per demo with before and after
-
-Every demo folder in `Safety net\` has two separate projects, each with **its own report and its own semantic model**:
-
-- `Demo N before.pbip`: the starting point. Continue in this one when `Demo live` gets stuck.
-- `Demo N after.pbip`: the result. Show this one when time runs out or the demo doesn't work.
-
-| Folder | Demo | Before | After |
-|---|---|---|---|
-| `Demo 1 - star` | split the flat table into a star schema | 1 flat table, empty report | star schema |
-| `Demo 2 - measures` | DAX measures | star schema | + measures |
-| `Demo 3 - page` | build a page | + measures | + page |
-| `Demo 4 - theme` | theme JSON | + page | + theme |
-| `Demo 5 - tooltip` | tooltip sentence (Guy in a Cube) | + theme | + tooltip sentence |
-| `Demo 6 - navigation` | navigation buttons | + tooltip sentence | + buttons |
-| `Demo 7 - drillthrough` | drillthrough button | + buttons | + drillthrough |
-| `Demo 8 - references` | references on the new card | + drillthrough | end result |
-
-The "after" of demo N is the same as the "before" of demo N+1.
-
-## Use
-
-1. Open `Demo N before.pbip` and click **Refresh** (the data isn't stored in the files).
-2. Demo live with Claude Code in that demo's folder.
-3. If it doesn't work or there's no time: close it and open `Demo N after.pbip` (Refresh too).
-
-**After a session:** resetting a before version to the original is done with git:
-
-```powershell
-git restore "Safety net/Demo 2 - measures"
-git clean -fd "Safety net/Demo 2 - measures"
-```
-
-## Other folders
-
-| Folder | What |
+| File | What it is |
 |---|---|
-| `Material\prompts\` | Per demo: prompt · result · what I corrected. `screenshots\` before/after |
-| `Material\` | Theme files `Theme.json` and `Theme 01.json` |
+| `Demo live.pbip` | The starting point for the session: one flat table, no model built yet |
+| `Demo tested.pbip` | A full dry run of the session, already built and tested, for reference |
+| `Demo final.pbip` | The finished result: star-schema model, measures, formatted and interactive report pages |
+| `CLAUDE.md` | The instructions given to the AI agent for this project — how it should work with the semantic model and the report |
+| `Screenshot page by Claude.png` | The same report page, built with Claude Code |
+| `Screenshot page by Git Hub Copilot*.png` | The same report page, built with GitHub Copilot, for comparison |
 
-The old setup (`_oud\` with checkpoints and `tools\` with build scripts) was removed on 26-10-2026; it can be restored from git (commit `da8bdf3`). On 27-10-2026 the folders and files were renamed from Dutch to English (`Presentatie` → `Presentation`, `Vangnet` → `Safety net`, `Materiaal` → `Material`, `voor`/`na` → `before`/`after`, `Demo eind` → `Demo final`); older commits use the Dutch names.
+## Using this yourself
 
-## Note
+1. Get the source data (the VGChartz 2024 video game sales export, `vgchartz-2024.csv`) and update the Power Query source step to point at your own copy — the file itself isn't part of this repo.
+2. Open any `.pbip` file in Power BI Desktop and click **Refresh**; the data isn't stored in the project files, only the model and report definitions are.
+3. Open `Demo live.pbip` to start from the raw flat table, or `Demo final.pbip` to see the end result directly.
+4. `CLAUDE.md` shows the actual working instructions used to drive the build with Claude Code.
 
-- **Pause OneDrive** during the session.
-- Demo 1 before is deliberately "the way Desktop does it": raw column names, numbers summarized as *Sum* (including `critic_score`), no measures, default theme.
+## Data
+
+The dataset used is a video game sales export (`vgchartz-2024.csv`, 64,016 rows, 14 columns: title, platform, genre, publisher, regional and global sales, critic score, release date). It is not included in this repo; source your own copy and point the model's Power Query source at it before refreshing.
+
+## Notes
+
+- This is session material, not a maintained project — some paths assume the pbi-cli / MCP setup described in `CLAUDE.md`.
+- `Demo live` is deliberately left "the way Power BI Desktop builds it by default": raw column names, numbers auto-summarized, no measures, default theme — the starting point the rest of the session improves on.
