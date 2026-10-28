@@ -1,0 +1,88 @@
+table _Measures
+	lineageTag: 62a9166e-2a0f-4966-a36e-58efe815c96b
+
+	/// Copies sold in millions, all regions.
+	measure 'Copies Sold' = SUM ( Fact_Game_Sales[Units Sold (millions)] )
+		formatString: #,0.0 "M"
+		lineageTag: fa8043b2-120e-4676-892e-8153201fad81
+
+	/// Average critic score per game and platform. The score repeats per region row, so it is averaged per game + platform first.
+	measure 'Avg Critic Score' =
+			AVERAGEX (
+			    SUMMARIZE ( Fact_Game_Sales, Fact_Game_Sales[GameKey], Fact_Game_Sales[PlatformKey] ),
+			    CALCULATE ( AVERAGE ( Fact_Game_Sales[Critic Score] ) )
+			)
+		formatString: 0.0
+		lineageTag: c49a6a36-3bf9-4090-8923-9a657cfed1ca
+
+	/// Number of unique game titles.
+	measure Games = DISTINCTCOUNT ( Fact_Game_Sales[GameKey] )
+		formatString: #,0
+		lineageTag: 7b1237b0-2060-4bb3-b2e8-12fed011b53f
+
+	/// Copies sold for games released in the same period one year earlier.
+	measure 'Copies Sold PY' = CALCULATE ( [Copies Sold], SAMEPERIODLASTYEAR ( Dim_Date[Date] ) )
+		formatString: #,0.0 "M"
+		lineageTag: 5b994359-fed8-48dc-8ae7-68b19702ffb4
+
+	/// Growth of copies sold vs the previous year.
+	measure 'Copies Sold Growth %' = DIVIDE ( [Copies Sold] - [Copies Sold PY], [Copies Sold PY] )
+		formatString: +0.0%;-0.0%;0.0%
+		lineageTag: 50a69dfe-5d17-4359-b607-53a6f94fa692
+
+	/// Share of copies sold, compared with all genres in the same period.
+	measure 'Copies Sold % of Total' = DIVIDE ( [Copies Sold], CALCULATE ( [Copies Sold], ALL ( Dim_Genre ) ) )
+		formatString: 0.0%
+		lineageTag: a9d56eb2-934a-4571-a291-8214aa4799c0
+
+	/// One sentence for the genre under the mouse. Idea: Guy in a Cube.
+	measure 'Genre Tooltip Text' =
+			VAR _genre = SELECTEDVALUE ( Dim_Genre[Genre] )
+			VAR _copies = [Copies Sold]
+			VAR _share = [Copies Sold % of Total]
+			VAR _score = [Avg Critic Score]
+			VAR _rank = RANKX ( ALL ( Dim_Genre[Genre] ), [Copies Sold], , DESC, DENSE )
+			VAR _genres = COUNTROWS ( FILTER ( ALL ( Dim_Genre[Genre] ), [Copies Sold] > 0 ) )
+			VAR _first = MIN ( Dim_Date[Year] )
+			VAR _last = MAX ( Dim_Date[Year] )
+			RETURN
+			    IF (
+			        NOT ISBLANK ( _genre ) && NOT ISBLANK ( _copies ),
+			        _genre & " sold " & FORMAT ( _copies, "#,0.0" ) & " M copies in " & _first & "–" & _last & ": "
+			            & FORMAT ( _share, "0.0%" ) & " of all copies, #" & _rank & " of " & _genres & " genres. "
+			            & "Average critic score " & FORMAT ( _score, "0.0" ) & "."
+			    )
+		lineageTag: 79ca4df3-a8b0-4a5d-92ab-c73d2506bfe6
+
+	/// Title of the drillthrough page: the selected genre.
+	measure 'Genre Details Title' = SELECTEDVALUE ( Dim_Genre[Genre], "Genre" ) & ": details"
+		lineageTag: dab329a5-43a1-4397-ac34-41d1743e9424
+
+	/// Text on the drillthrough button: says what it does once one genre is selected.
+	measure 'Drillthrough Button Text' =
+			IF (
+			    HASONEVALUE ( Dim_Genre[Genre] ),
+			    "See details for " & VALUES ( Dim_Genre[Genre] ) & " ▶",
+			    "Select a genre first"
+			)
+		lineageTag: 823b0865-b5e2-4d22-9213-e1ca9514f0e1
+
+	/// Colour for growth: bright blue when copies sold grew, bright orange when they fell. No red/green.
+	measure 'Growth Color' = IF ( [Copies Sold Growth %] >= 0, "#118DFF", "#E66C37" )
+		lineageTag: 46193901-d7d0-4382-b1f5-de89d3c47e54
+
+	column x
+		dataType: string
+		isHidden
+		lineageTag: 5bee3e17-bb84-41b5-9f83-4851e36daf2b
+		summarizeBy: none
+		sourceColumn: x
+
+		annotation SummarizationSetBy = Automatic
+
+	partition _Measures = m
+		mode: import
+		source = #table(type table [x = text], {})
+
+	annotation PBI_ResultType = Table
+

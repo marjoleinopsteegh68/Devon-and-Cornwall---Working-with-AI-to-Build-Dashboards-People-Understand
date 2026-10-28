@@ -1,0 +1,26 @@
+table Developer
+	lineageTag: b12dbb7e-9ac6-48cf-ae03-6d9b9f5bbe32
+
+	column DeveloperKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: d50eba10-0dbb-4e84-babf-5d2b5f1dbd73
+		sourceColumn: DeveloperKey
+
+	column Developer
+		dataType: string
+		lineageTag: fb949981-1e76-4714-aa88-2581a88d7d9a
+		sourceColumn: Developer
+
+	partition Developer = m
+		mode: import
+		source =
+				let
+				    Source = #"VG Bron",
+				    Selected = Table.Distinct(Table.SelectColumns(Source, {"DeveloperKey", "developer"})),
+				    Renamed = Table.RenameColumns(Selected, {{"developer", "Developer"}}),
+				    Sorted = Table.Sort(Renamed, {{"DeveloperKey", Order.Ascending}})
+				in
+				    Sorted
+

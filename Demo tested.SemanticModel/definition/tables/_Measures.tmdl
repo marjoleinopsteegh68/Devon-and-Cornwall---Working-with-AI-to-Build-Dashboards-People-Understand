@@ -1,0 +1,165 @@
+/// Home table for report measures
+table _Measures
+	lineageTag: 853e5524-73d1-4e07-b43a-28043c9cdc0a
+
+	/// Copies sold in millions of units, summed over all regions.
+	measure 'Copies Sold' = SUM(Sales[Sales])
+		formatString: #,0.0"M"
+		lineageTag: e6672f86-d482-4bd1-ac3a-a4fdb0a5114f
+
+	/// Average critic score (1-10) of the games that have sales in the current filter context. Games without a score are ignored.
+	measure 'Avg Critic Score' = CALCULATE(AVERAGE(Game[Critic Score]), Sales)
+		formatString: 0.0
+		lineageTag: 2573967f-bfdc-4d17-a381-17ab2e69d272
+
+	/// Number of distinct games (Game rows) with sales in the current filter context.
+	measure Games = DISTINCTCOUNT(Sales[GameKey])
+		formatString: #,##0
+		lineageTag: d32cb9af-d84e-4361-a8db-b20fc0036107
+
+	/// Copies sold (millions) in the same period of the previous year.
+	measure 'Copies Sold PY' = CALCULATE([Copies Sold], SAMEPERIODLASTYEAR('Date'[Date]))
+		formatString: #,0.0"M"
+		lineageTag: e5f8c110-b385-4451-8887-0548b39546f9
+
+	/// Year-over-year growth of Copies Sold versus Copies Sold PY. Blank when there are no prior-year sales.
+	measure 'Copies Sold Growth %' = DIVIDE([Copies Sold] - [Copies Sold PY], [Copies Sold PY])
+		formatString: +0.0%;-0.0%;0.0%
+		lineageTag: 73379785-2a6a-47f8-98ce-b096a632460c
+
+	/// Copies sold (millions) per distinct game.
+	measure 'Copies per Game' = DIVIDE([Copies Sold], [Games])
+		formatString: #,0.00"M"
+		lineageTag: e519af73-e327-47d7-a987-c550d898b338
+
+	/// Copies sold (millions) in the period of equal length just before the selected years (2014-2018 -> 2009-2013).
+	measure 'Copies Sold Prev Period' =
+			VAR _first = MIN('Date'[Year])
+			VAR _last = MAX('Date'[Year])
+			VAR _years = _last - _first + 1
+			RETURN
+			    CALCULATE(
+			        [Copies Sold],
+			        REMOVEFILTERS('Date'),
+			        'Date'[Year] >= _first - _years,
+			        'Date'[Year] <= _last - _years
+			    )
+		formatString: #,0.0"M"
+		lineageTag: 71a3bd38-498d-4447-a17b-cbe34f572cdd
+
+	/// Genre name in capitals for the genre tooltip page.
+	measure 'Tooltip Genre' = UPPER(SELECTEDVALUE(Genre[Genre], "All genres"))
+		displayFolder: Tooltip
+		lineageTag: b36aa379-bd3d-4c22-96f3-817b07474902
+
+	/// Rank, games and period line for the genre tooltip page.
+	measure 'Tooltip Subtitle' =
+			VAR _dot = "  " & UNICHAR(183) & "  "
+			VAR _first = MIN('Date'[Year])
+			VAR _last = MAX('Date'[Year])
+			VAR _period = IF(_first = _last, FORMAT(_first, "0"), _first & UNICHAR(8211) & _last)
+			VAR _rank = RANKX(ALL(Genre[Genre]), [Copies Sold])
+			VAR _genres = COUNTROWS(FILTER(ALL(Genre[Genre]), NOT ISBLANK([Copies Sold])))
+			RETURN
+			    IF(HASONEVALUE(Genre[Genre]), "RANK #" & _rank & " OF " & _genres & " GENRES" & _dot, "")
+			        & FORMAT([Games], "#,0") & " GAMES" & _dot & _period
+		displayFolder: Tooltip
+		lineageTag: c018aef7-0c6d-4be1-ab17-e5d3981861c4
+
+	/// Copies sold and share of all genres, as text, for the genre tooltip page.
+	measure 'Tooltip This Period' =
+			VAR _copies = [Copies Sold]
+			VAR _share = DIVIDE(_copies, CALCULATE([Copies Sold], REMOVEFILTERS(Genre)))
+			RETURN
+			    IF(ISBLANK(_copies), UNICHAR(8211), FORMAT(_copies, "#,0.0") & "M  " & UNICHAR(183) & "  " & FORMAT(_share, "0%"))
+		displayFolder: Tooltip
+		lineageTag: 1f007f84-2e23-4dc0-9202-9696a6ba2197
+
+	/// Copies sold and share of all genres in the previous period, as text, for the genre tooltip page.
+	measure 'Tooltip Previous Period' =
+			VAR _copies = [Copies Sold Prev Period]
+			VAR _share = DIVIDE(_copies, CALCULATE([Copies Sold Prev Period], REMOVEFILTERS(Genre)))
+			RETURN
+			    IF(ISBLANK(_copies), UNICHAR(8211), FORMAT(_copies, "#,0.0") & "M  " & UNICHAR(183) & "  " & FORMAT(_share, "0%"))
+		displayFolder: Tooltip
+		lineageTag: 5e85a01f-9be3-4e21-82af-97254b362cd8
+
+	/// Dynamic heading for the region chart on the genre tooltip page.
+	measure 'Tooltip Chart Title' =
+			VAR _first = MIN('Date'[Year])
+			VAR _last = MAX('Date'[Year])
+			VAR _years = _last - _first + 1
+			VAR _now = IF(_years = 1, FORMAT(_last, "0"), _first & UNICHAR(8211) & _last)
+			VAR _prev = IF(_years = 1, FORMAT(_last - 1, "0"), (_first - _years) & UNICHAR(8211) & (_last - _years))
+			RETURN
+			    "COPIES SOLD BY REGION  " & UNICHAR(183) & "  " & _prev & " VS " & _now
+		displayFolder: Tooltip
+		lineageTag: 483f8f55-ad89-47ae-b303-80483713ccba
+
+	/// Copies per game as text, for the genre tooltip page.
+	measure 'Tooltip Per Game' =
+			VAR _perGame = [Copies per Game]
+			RETURN
+			    IF(ISBLANK(_perGame), UNICHAR(8211), FORMAT(_perGame, "0.00") & "M")
+		displayFolder: Tooltip
+		lineageTag: d5712397-c7c8-4831-8ce2-7a8a219145d9
+
+	/// Share of copies sold of all genres in the current period.
+	measure 'Genre Share %' = DIVIDE([Copies Sold], CALCULATE([Copies Sold], REMOVEFILTERS(Genre)))
+		formatString: 0%
+		lineageTag: ff883a11-60fd-439e-8296-eddc69f7ff63
+
+	/// Rank of the selected genre by copies sold among genres with sales, as text (e.g. #1 of 19). Blank when not exactly one genre is selected.
+	measure 'Genre Rank' = VAR _rank = RANKX(ALL(Genre[Genre]), [Copies Sold]) VAR _genres = COUNTROWS(FILTER(ALL(Genre[Genre]), NOT ISBLANK([Copies Sold]))) RETURN IF(HASONEVALUE(Genre[Genre]) && NOT ISBLANK([Copies Sold]), "#" & _rank & " of " & _genres)
+		lineageTag: 4f134406-2557-41cb-9d6e-31c2a16362c5
+
+	/// Change in copies sold versus the period of equal length just before the selected years.
+	measure 'Copies Sold vs Prev Period %' = DIVIDE([Copies Sold] - [Copies Sold Prev Period], [Copies Sold Prev Period])
+		formatString: +0%;-0%;0%
+		lineageTag: c7204097-ee16-41d7-9503-0227dbb407ea
+
+	/// Copies sold (millions) per game across all genres, as benchmark.
+	measure 'Copies per Game All Genres' = CALCULATE([Copies per Game], REMOVEFILTERS(Genre))
+		formatString: #,0.00"M"
+		lineageTag: 36cc42fd-625e-41dc-ba80-070fc5ad3316
+
+	/// Copies per game of the selection divided by copies per game across all genres.
+	measure 'Copies per Game vs All Genres' = DIVIDE([Copies per Game], [Copies per Game All Genres])
+		formatString: 0.0"x market"
+		lineageTag: b4f425c7-f0d2-4f25-a3f6-64fba9e756fd
+
+	/// Average critic score across all genres, as benchmark.
+	measure 'Avg Critic Score All Genres' = CALCULATE([Avg Critic Score], REMOVEFILTERS(Genre))
+		formatString: 0.0
+		lineageTag: ea41ed8c-6827-4b20-a710-74cc9e745d46
+
+	/// Difference in average critic score versus all genres.
+	measure 'Avg Critic Score vs All Genres' = [Avg Critic Score] - [Avg Critic Score All Genres]
+		formatString: +0.0" pt";-0.0" pt";0.0" pt"
+		lineageTag: 20aa32c5-0f5b-4040-a426-2b899b0ba13d
+
+	/// Average critic score in the period of equal length just before the selected years.
+	measure 'Avg Critic Score Prev Period' =
+			VAR _first = MIN('Date'[Year])
+			VAR _last = MAX('Date'[Year])
+			VAR _years = _last - _first + 1
+			RETURN
+			    CALCULATE(
+			        [Avg Critic Score],
+			        REMOVEFILTERS('Date'),
+			        'Date'[Year] >= _first - _years,
+			        'Date'[Year] <= _last - _years
+			    )
+		formatString: 0.0
+		lineageTag: 644103c2-6e3b-44c2-869f-2ec892e473cd
+
+	column Dummy
+		dataType: int64
+		isHidden
+		lineageTag: b5ee1ed5-7802-485d-9dd8-298222496fac
+		sourceColumn: Dummy
+
+	partition _Measures = m
+		mode: import
+		source = let Source = #table(type table [Dummy = Int64.Type], {}) in Source
+

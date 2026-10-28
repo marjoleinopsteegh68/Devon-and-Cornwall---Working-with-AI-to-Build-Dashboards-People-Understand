@@ -1,0 +1,26 @@
+table Publisher
+	lineageTag: c2e27e67-edde-4444-83c2-47fcd1b48fc5
+
+	column PublisherKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: d3e48f11-a98a-442e-a933-7c33421428e5
+		sourceColumn: PublisherKey
+
+	column Publisher
+		dataType: string
+		lineageTag: a5d8d021-0056-42b7-a5a0-20bb5563b45b
+		sourceColumn: Publisher
+
+	partition Publisher = m
+		mode: import
+		source =
+				let
+				    Source = #"VG Bron",
+				    Selected = Table.Distinct(Table.SelectColumns(Source, {"PublisherKey", "publisher"})),
+				    Renamed = Table.RenameColumns(Selected, {{"publisher", "Publisher"}}),
+				    Sorted = Table.Sort(Renamed, {{"PublisherKey", Order.Ascending}})
+				in
+				    Sorted
+

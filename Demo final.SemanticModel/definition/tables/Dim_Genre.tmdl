@@ -1,0 +1,35 @@
+table Dim_Genre
+	lineageTag: 84927787-eeba-4678-a67f-7c6aebb25508
+
+	column GenreKey
+		dataType: int64
+		isHidden
+		lineageTag: c2b3e44c-a36a-4d2e-95cd-6199c023e256
+		summarizeBy: none
+		sourceColumn: GenreKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Genre
+		dataType: string
+		lineageTag: e78650c7-711a-4925-ac54-35ecbe56eb37
+		summarizeBy: none
+		sourceColumn: Genre
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Genre = m
+		mode: import
+		source =
+				let
+				    Source = Source_VGChartz_Raw,
+				    #"Distinct Genre" = Table.Distinct(Table.SelectColumns(Source, {"genre"})),
+				    #"Removed Blanks" = Table.SelectRows(#"Distinct Genre", each [genre] <> null and [genre] <> ""),
+				    #"Sorted" = Table.Sort(#"Removed Blanks", {{"genre", Order.Ascending}}),
+				    #"Added Key" = Table.AddIndexColumn(#"Sorted", "GenreKey", 1, 1, Int64.Type),
+				    #"Renamed" = Table.RenameColumns(#"Added Key", {{"genre", "Genre"}})
+				in
+				    #"Renamed"
+
+	annotation PBI_ResultType = Table
+

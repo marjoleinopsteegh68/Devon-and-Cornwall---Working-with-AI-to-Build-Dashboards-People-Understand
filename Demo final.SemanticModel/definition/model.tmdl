@@ -1,0 +1,26 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: nl-NL
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["Source_VGChartz_Raw","Fact_Game_Sales","Dim_Game","Dim_Platform","Dim_Genre","Dim_Publisher","Dim_Region","Dim_Date","_Measures"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table Fact_Game_Sales
+ref table Dim_Game
+ref table Dim_Platform
+ref table Dim_Genre
+ref table Dim_Publisher
+ref table Dim_Region
+ref table Dim_Date
+ref table _Measures
+
+ref cultureInfo en-US
+

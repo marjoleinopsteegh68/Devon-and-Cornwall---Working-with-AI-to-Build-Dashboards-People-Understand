@@ -1,0 +1,65 @@
+table Date
+	lineageTag: 625e1105-e775-4f00-9e3b-efdb0f4cd5ff
+	dataCategory: Time
+
+	column Date
+		dataType: dateTime
+		isKey
+		lineageTag: 48a7fa3a-b5e8-49eb-8025-27446331388b
+		sourceColumn: Date
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: 18954c0c-ca87-4475-a6e4-dbdf709733ca
+		sourceColumn: DateKey
+
+	column Year
+		dataType: int64
+		lineageTag: 26006f42-7650-4182-a24d-e1051afbe7f6
+		sourceColumn: Year
+
+	column Quarter
+		dataType: string
+		lineageTag: 15f0967d-7e3f-4010-8d97-64ee98e5261e
+		sourceColumn: Quarter
+
+	column 'Month Number'
+		dataType: int64
+		lineageTag: c9a89965-0071-4d5d-b892-90a43871f17a
+		sourceColumn: Month Number
+
+	column Month
+		dataType: string
+		lineageTag: 2a6b9ee4-69ec-4be1-a166-c3a7702e9250
+		sourceColumn: Month
+
+	column 'Year Month'
+		dataType: string
+		lineageTag: 43090b22-c6bc-47c6-bfa0-0c4c6b050615
+		sourceColumn: Year Month
+
+	column Decade
+		dataType: string
+		lineageTag: a17b3c51-68e0-4755-b75f-ef37f99d5efd
+		sourceColumn: Decade
+
+	partition Date = m
+		mode: import
+		source =
+				let
+				    MinDate = List.Min(#"VG Bron"[release_date]),
+				    StartDate = #date(Date.Year(MinDate), 1, 1),
+				    EndDate = #date(2018, 12, 31),
+				    Dates = List.Dates(StartDate, Duration.Days(EndDate - StartDate) + 1, #duration(1, 0, 0, 0)),
+				    AsTable = Table.FromList(Dates, Splitter.SplitByNothing(), type table [Date = date]),
+				    AddKey = Table.AddColumn(AsTable, "DateKey", each Date.Year([Date]) * 10000 + Date.Month([Date]) * 100 + Date.Day([Date]), Int64.Type),
+				    AddYear = Table.AddColumn(AddKey, "Year", each Date.Year([Date]), Int64.Type),
+				    AddQuarter = Table.AddColumn(AddYear, "Quarter", each "Q" & Text.From(Date.QuarterOfYear([Date])), type text),
+				    AddMonthNo = Table.AddColumn(AddQuarter, "Month Number", each Date.Month([Date]), Int64.Type),
+				    AddMonth = Table.AddColumn(AddMonthNo, "Month", each Date.ToText([Date], "MMMM", "en-US"), type text),
+				    AddYearMonth = Table.AddColumn(AddMonth, "Year Month", each Date.ToText([Date], "yyyy-MM"), type text),
+				    AddDecade = Table.AddColumn(AddYearMonth, "Decade", each Text.From(Number.IntegerDivide(Date.Year([Date]), 10) * 10) & "s", type text)
+				in
+				    AddDecade
+

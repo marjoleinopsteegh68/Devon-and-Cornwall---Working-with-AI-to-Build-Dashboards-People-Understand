@@ -1,0 +1,147 @@
+table vgchartz-2024
+	lineageTag: 9f92e6db-0ab4-4c0d-9117-8d38de215159
+
+	column img
+		dataType: string
+		lineageTag: 080cb290-b4f8-4a58-9184-4078364e7de1
+		summarizeBy: none
+		sourceColumn: img
+
+		annotation SummarizationSetBy = Automatic
+
+	column title
+		dataType: string
+		lineageTag: de5859d0-947c-4f64-a6b3-87d0b74db205
+		summarizeBy: none
+		sourceColumn: title
+
+		annotation SummarizationSetBy = Automatic
+
+	column console
+		dataType: string
+		lineageTag: de3a1a08-5f91-4796-8a09-aee2e159ffde
+		summarizeBy: none
+		sourceColumn: console
+
+		annotation SummarizationSetBy = Automatic
+
+	column genre
+		dataType: string
+		lineageTag: 638a838a-af2a-4c08-b194-0407a35c2c13
+		summarizeBy: none
+		sourceColumn: genre
+
+		annotation SummarizationSetBy = Automatic
+
+	column publisher
+		dataType: string
+		lineageTag: 27a7fb05-bca0-4a4b-aeab-64b2b9acc367
+		summarizeBy: none
+		sourceColumn: publisher
+
+		annotation SummarizationSetBy = Automatic
+
+	column developer
+		dataType: string
+		lineageTag: c2ddb732-662f-4659-a776-6dba38c1e007
+		summarizeBy: none
+		sourceColumn: developer
+
+		annotation SummarizationSetBy = Automatic
+
+	column critic_score
+		dataType: double
+		lineageTag: 2e0198d6-583b-4f7d-8112-2307b1ba3890
+		summarizeBy: sum
+		sourceColumn: critic_score
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_sales
+		dataType: double
+		lineageTag: d78f351e-64e7-4724-89c5-89b44f44ba78
+		summarizeBy: sum
+		sourceColumn: total_sales
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column na_sales
+		dataType: double
+		lineageTag: 81ae414a-e5eb-4c81-ba1b-4d8edc982785
+		summarizeBy: sum
+		sourceColumn: na_sales
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column jp_sales
+		dataType: double
+		lineageTag: 3c6c9fc0-b56d-4880-a055-96753a004ec9
+		summarizeBy: sum
+		sourceColumn: jp_sales
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column pal_sales
+		dataType: double
+		lineageTag: 4aab889d-923d-4f93-9220-87f9f340461e
+		summarizeBy: sum
+		sourceColumn: pal_sales
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column other_sales
+		dataType: double
+		lineageTag: 9b079903-8c70-461f-935b-45bf2c73af2f
+		summarizeBy: sum
+		sourceColumn: other_sales
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column release_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 90257ea7-d79f-48c2-8c64-00d127cf1914
+		summarizeBy: none
+		sourceColumn: release_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column last_update
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 83551178-fc6b-4d1c-bca8-1bdbb278dae0
+		summarizeBy: none
+		sourceColumn: last_update
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition vgchartz-2024 = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\mopsteegh\OneDrive - ilionx Group BV\08. Trainingen\Dataset video games\Data video games\vgchartz-2024.csv"),[Delimiter=",", Columns=14, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"img", type text}, {"title", type text}, {"console", type text}, {"genre", type text}, {"publisher", type text}, {"developer", type text}, {"critic_score", type number}, {"total_sales", type number}, {"na_sales", type number}, {"jp_sales", type number}, {"pal_sales", type number}, {"other_sales", type number}, {"release_date", type date}, {"last_update", type date}}, "en-US")
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

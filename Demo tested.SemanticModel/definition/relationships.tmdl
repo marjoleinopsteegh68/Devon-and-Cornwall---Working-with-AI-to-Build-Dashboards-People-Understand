@@ -1,0 +1,28 @@
+relationship Relationship
+	fromColumn: Sales.GameKey
+	toColumn: Game.GameKey
+
+relationship 'Relationship 1'
+	fromColumn: Sales.ConsoleKey
+	toColumn: Console.ConsoleKey
+
+relationship 'Relationship 2'
+	fromColumn: Sales.GenreKey
+	toColumn: Genre.GenreKey
+
+relationship 'Relationship 3'
+	fromColumn: Sales.PublisherKey
+	toColumn: Publisher.PublisherKey
+
+relationship 'Relationship 4'
+	fromColumn: Sales.DeveloperKey
+	toColumn: Developer.DeveloperKey
+
+relationship 'Relationship 5'
+	fromColumn: Sales.RegionKey
+	toColumn: Region.RegionKey
+
+relationship 'Relationship 6'
+	fromColumn: Sales.DateKey
+	toColumn: Date.DateKey
+

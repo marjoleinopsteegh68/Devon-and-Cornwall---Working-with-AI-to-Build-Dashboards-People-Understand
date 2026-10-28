@@ -1,0 +1,26 @@
+table Console
+	lineageTag: ef750a0c-883d-454a-a6a5-47ff7c90ae71
+
+	column ConsoleKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: d70f1f2b-1383-4486-a99e-2c34f1579c21
+		sourceColumn: ConsoleKey
+
+	column Console
+		dataType: string
+		lineageTag: c406b017-553c-474f-9966-27b49c7a8526
+		sourceColumn: Console
+
+	partition Console = m
+		mode: import
+		source =
+				let
+				    Source = #"VG Bron",
+				    Selected = Table.Distinct(Table.SelectColumns(Source, {"ConsoleKey", "console"})),
+				    Renamed = Table.RenameColumns(Selected, {{"console", "Console"}}),
+				    Sorted = Table.Sort(Renamed, {{"ConsoleKey", Order.Ascending}})
+				in
+				    Sorted
+

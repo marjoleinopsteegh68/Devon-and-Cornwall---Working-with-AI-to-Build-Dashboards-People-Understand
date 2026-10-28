@@ -1,0 +1,27 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: nl-NL
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["vgchartz-2024"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table vgchartz-2024
+ref table Game
+ref table Console
+ref table Genre
+ref table Publisher
+ref table Developer
+ref table Region
+ref table Date
+ref table Sales
+ref table _Measures
+
+ref cultureInfo en-US
+

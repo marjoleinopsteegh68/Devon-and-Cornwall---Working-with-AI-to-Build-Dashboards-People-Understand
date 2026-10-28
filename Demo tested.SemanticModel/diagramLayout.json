@@ -1,0 +1,143 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 0,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "nodeIndex": "vgchartz-2024",
+          "nodeLineageTag": "9f92e6db-0ab4-4c0d-9117-8d38de215159",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 284,
+            "y": 114
+          },
+          "nodeIndex": "Game",
+          "size": {
+            "height": 72,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 568,
+            "y": 114
+          },
+          "nodeIndex": "Console",
+          "size": {
+            "height": 72,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 852,
+            "y": 114
+          },
+          "nodeIndex": "Genre",
+          "size": {
+            "height": 72,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1136,
+            "y": 114
+          },
+          "nodeIndex": "Developer",
+          "size": {
+            "height": 72,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1420,
+            "y": 114
+          },
+          "nodeIndex": "Publisher",
+          "size": {
+            "height": 72,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1704,
+            "y": 114
+          },
+          "nodeIndex": "Region",
+          "size": {
+            "height": 72,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1988,
+            "y": 114
+          },
+          "nodeIndex": "Date",
+          "size": {
+            "height": 72,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 2272,
+            "y": 114
+          },
+          "nodeIndex": "Sales",
+          "size": {
+            "height": 72,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 2556,
+            "y": 98
+          },
+          "nodeIndex": "_Measures",
+          "size": {
+            "height": 104,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 100,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}

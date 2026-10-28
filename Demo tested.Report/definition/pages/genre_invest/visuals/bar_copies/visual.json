@@ -1,0 +1,372 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "bar_copies",
+  "position": {
+    "x": 40,
+    "y": 308,
+    "z": 2,
+    "height": 748,
+    "width": 880,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Genre"
+                    }
+                  },
+                  "Property": "Genre"
+                }
+              },
+              "queryRef": "Genre.Genre",
+              "nativeQueryRef": "Genre",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Copies Sold"
+                }
+              },
+              "queryRef": "_Measures.Copies Sold",
+              "nativeQueryRef": "Copies Sold"
+            }
+          ]
+        },
+        "Legend": {
+          "projections": []
+        }
+      },
+      "sortDefinition": {
+        "isDefaultSort": true,
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Property": "Copies Sold",
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Measures"
+                  }
+                }
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Shooter sold the most copies in 2014-2018: 256.7M, ahead of Sports and Action'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "type": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Canvas'"
+                }
+              }
+            },
+            "section": {
+              "expr": {
+                "Literal": {
+                  "Value": "'tooltip_genre'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "objects": {
+      "dataPoint": [
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#A6A6A6'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#1F7463'"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "Left": {
+                      "Column": {
+                        "Property": "Genre",
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Genre"
+                          }
+                        }
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Shooter'"
+                      }
+                    },
+                    "ComparisonKind": 0
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "labels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "valueAxis": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "categoryAxis": [
+        {
+          "properties": {
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "filter": {
+          "Version": 2,
+          "Where": [
+            {
+              "Condition": {
+                "Comparison": {
+                  "Left": {
+                    "Column": {
+                      "Property": "Year",
+                      "Expression": {
+                        "SourceRef": {
+                          "Source": "d"
+                        }
+                      }
+                    }
+                  },
+                  "Right": {
+                    "Literal": {
+                      "Value": "2014L"
+                    }
+                  },
+                  "ComparisonKind": 2
+                }
+              }
+            }
+          ],
+          "From": [
+            {
+              "Entity": "Date",
+              "Type": 0,
+              "Name": "d"
+            }
+          ]
+        },
+        "type": "Advanced",
+        "field": {
+          "Column": {
+            "Property": "Year",
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Date"
+              }
+            }
+          }
+        },
+        "name": "fYearFrom2014"
+      },
+      {
+        "filter": {
+          "Version": 2,
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Property": "Genre",
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "g"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "Table": {
+                    "SourceRef": {
+                      "Source": "subquery"
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "From": [
+            {
+              "Type": 2,
+              "Expression": {
+                "Subquery": {
+                  "Query": {
+                    "OrderBy": [
+                      {
+                        "Expression": {
+                          "Measure": {
+                            "Property": "Copies Sold",
+                            "Expression": {
+                              "SourceRef": {
+                                "Source": "m"
+                              }
+                            }
+                          }
+                        },
+                        "Direction": 2
+                      }
+                    ],
+                    "Top": 10,
+                    "Version": 2,
+                    "Select": [
+                      {
+                        "Name": "field",
+                        "Column": {
+                          "Property": "Genre",
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "g"
+                            }
+                          }
+                        }
+                      }
+                    ],
+                    "From": [
+                      {
+                        "Entity": "Genre",
+                        "Type": 0,
+                        "Name": "g"
+                      },
+                      {
+                        "Entity": "_Measures",
+                        "Type": 0,
+                        "Name": "m"
+                      }
+                    ]
+                  }
+                }
+              },
+              "Name": "subquery"
+            },
+            {
+              "Entity": "Genre",
+              "Type": 0,
+              "Name": "g"
+            }
+          ]
+        },
+        "type": "TopN",
+        "field": {
+          "Column": {
+            "Property": "Genre",
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Genre"
+              }
+            }
+          }
+        },
+        "name": "fTop10"
+      }
+    ]
+  }
+}

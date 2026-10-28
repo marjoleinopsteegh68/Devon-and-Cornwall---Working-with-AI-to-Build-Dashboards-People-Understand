@@ -1,0 +1,12 @@
+/// The raw CSV. Staging only: not loaded, referenced by all tables.
+expression Source_VGChartz_Raw =
+		let
+		    Source = Csv.Document(File.Contents("C:\Users\mopsteegh\OneDrive - ilionx Group BV\08. Trainingen\Dataset video games\Data video games\vgchartz-2024.csv"),[Delimiter=",", Columns=14, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+		    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"img", type text}, {"title", type text}, {"console", type text}, {"genre", type text}, {"publisher", type text}, {"developer", type text}, {"critic_score", type number}, {"total_sales", type number}, {"na_sales", type number}, {"jp_sales", type number}, {"pal_sales", type number}, {"other_sales", type number}, {"release_date", type date}, {"last_update", type date}}, "en-US")
+		in
+		    #"Changed Type"
+	lineageTag: 583bdf76-f122-4e1e-8178-4c6a38a3642e
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "tooltipgenre00000001",
+  "displayName": "Genre tooltip",
+  "displayOption": "ActualSize",
+  "height": 300,
+  "width": 480,
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "ttgenrefilter0000001",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Dim_Genre"
+              }
+            },
+            "Property": "Genre"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "Drillthrough"
+      }
+    ]
+  },
+  "pageBinding": {
+    "name": "ttgenrebinding000001",
+    "type": "Tooltip",
+    "parameters": [
+      {
+        "name": "ttgenreparam0000001",
+        "boundFilter": "ttgenrefilter0000001",
+        "fieldExpr": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Dim_Genre"
+              }
+            },
+            "Property": "Genre"
+          }
+        }
+      }
+    ]
+  },
+  "type": "Tooltip",
+  "visibility": "HiddenInViewMode"
+}

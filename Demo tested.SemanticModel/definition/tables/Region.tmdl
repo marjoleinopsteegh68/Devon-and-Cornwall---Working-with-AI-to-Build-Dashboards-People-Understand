@@ -1,0 +1,29 @@
+table Region
+	lineageTag: 38c322c2-3432-4338-8c02-31604bf90461
+
+	column RegionKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: e138b521-5284-459f-be64-916e121e995e
+		sourceColumn: RegionKey
+
+	column RegionCode
+		dataType: string
+		isHidden
+		lineageTag: 97570a60-156d-4846-9b2c-4fb1f5ab1079
+		sourceColumn: RegionCode
+
+	column Region
+		dataType: string
+		lineageTag: a5ca1fbb-9685-4e87-b228-33e300719a76
+		sourceColumn: Region
+
+	partition Region = m
+		mode: import
+		source =
+				let
+				    Source = #"VG Regio"
+				in
+				    Source
+

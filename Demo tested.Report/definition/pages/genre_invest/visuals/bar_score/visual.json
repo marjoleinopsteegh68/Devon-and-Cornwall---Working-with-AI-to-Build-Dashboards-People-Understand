@@ -1,0 +1,352 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "bar_score",
+  "position": {
+    "x": 1424,
+    "y": 704,
+    "z": 5,
+    "height": 352,
+    "width": 456,
+    "tabOrder": 5
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Genre"
+                    }
+                  },
+                  "Property": "Genre"
+                }
+              },
+              "queryRef": "Genre.Genre",
+              "nativeQueryRef": "Genre",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Avg Critic Score"
+                }
+              },
+              "queryRef": "_Measures.Avg Critic Score",
+              "nativeQueryRef": "Avg Critic Score"
+            }
+          ]
+        },
+        "Legend": {
+          "projections": []
+        }
+      },
+      "sortDefinition": {
+        "isDefaultSort": true,
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Property": "Avg Critic Score",
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Measures"
+                  }
+                }
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Shooter also has the best reviews of the top 5 genres (8.1)'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualTooltip": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "type": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Canvas'"
+                }
+              }
+            },
+            "section": {
+              "expr": {
+                "Literal": {
+                  "Value": "'tooltip_genre'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "objects": {
+      "dataPoint": [
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#A6A6A6'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#1F7463'"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "Left": {
+                      "Column": {
+                        "Property": "Genre",
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Genre"
+                          }
+                        }
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Shooter'"
+                      }
+                    },
+                    "ComparisonKind": 0
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "labels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "valueAxis": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "categoryAxis": [
+        {
+          "properties": {
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "386cf21e62946dbb9f19",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Genre"
+              }
+            },
+            "Property": "Genre"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "g",
+              "Entity": "Genre",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "g"
+                          }
+                        },
+                        "Property": "Genre"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'Shooter'"
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'Sports'"
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'Action'"
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'Role-Playing'"
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'Action-Adventure'"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "filter": {
+          "Version": 2,
+          "Where": [
+            {
+              "Condition": {
+                "Comparison": {
+                  "Left": {
+                    "Column": {
+                      "Property": "Year",
+                      "Expression": {
+                        "SourceRef": {
+                          "Source": "d"
+                        }
+                      }
+                    }
+                  },
+                  "Right": {
+                    "Literal": {
+                      "Value": "2014L"
+                    }
+                  },
+                  "ComparisonKind": 2
+                }
+              }
+            }
+          ],
+          "From": [
+            {
+              "Entity": "Date",
+              "Type": 0,
+              "Name": "d"
+            }
+          ]
+        },
+        "type": "Advanced",
+        "field": {
+          "Column": {
+            "Property": "Year",
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Date"
+              }
+            }
+          }
+        },
+        "name": "fYearFrom2014"
+      }
+    ]
+  }
+}

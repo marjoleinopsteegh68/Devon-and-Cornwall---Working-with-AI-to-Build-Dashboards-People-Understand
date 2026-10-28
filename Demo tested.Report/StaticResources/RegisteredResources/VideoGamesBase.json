@@ -1,0 +1,170 @@
+{
+  "name": "Video games base",
+  "dataColors": [
+    "#1F7463",
+    "#3F3F3F",
+    "#C8C8C8",
+    "#6CC3A8",
+    "#7F7F7F",
+    "#5FA88A",
+    "#000000",
+    "#A6A6A6"
+  ],
+  "background": "#FFFFFF",
+  "foreground": "#252423",
+  "tableAccent": "#1F7463",
+  "good": "#118DFF",
+  "neutral": "#7F7F7F",
+  "bad": "#E66C37",
+  "textClasses": {
+    "title": {
+      "fontFace": "'Segoe UI Semibold', wf_segoe-ui_semibold, helvetica, arial, sans-serif",
+      "fontSize": 20,
+      "color": "#252423"
+    },
+    "header": {
+      "fontFace": "'Segoe UI Semibold', wf_segoe-ui_semibold, helvetica, arial, sans-serif",
+      "fontSize": 14,
+      "color": "#252423"
+    },
+    "label": {
+      "fontFace": "'Segoe UI', wf_segoe-ui_normal, helvetica, arial, sans-serif",
+      "fontSize": 14,
+      "color": "#252423"
+    },
+    "callout": {
+      "fontFace": "'Segoe UI Semibold', wf_segoe-ui_semibold, helvetica, arial, sans-serif",
+      "fontSize": 32,
+      "color": "#252423"
+    }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "title": [
+          {
+            "fontSize": 20,
+            "titleWrap": true
+          }
+        ],
+        "subTitle": [
+          {
+            "fontSize": 14,
+            "fontColor": {
+              "solid": {
+                "color": "#605E5C"
+              }
+            }
+          }
+        ],
+        "categoryAxis": [
+          {
+            "fontSize": 14
+          }
+        ],
+        "valueAxis": [
+          {
+            "fontSize": 14
+          }
+        ],
+        "legend": [
+          {
+            "fontSize": 14
+          }
+        ],
+        "labels": [
+          {
+            "fontSize": 14
+          }
+        ],
+        "categoryLabels": [
+          {
+            "fontSize": 14
+          }
+        ],
+        "visualTooltip": [
+          {
+            "titleFontSize": 14,
+            "valueFontSize": 14
+          }
+        ]
+      }
+    },
+    "tableEx": {
+      "*": {
+        "columnHeaders": [
+          {
+            "fontSize": 14
+          }
+        ],
+        "values": [
+          {
+            "fontSize": 14
+          }
+        ],
+        "total": [
+          {
+            "fontSize": 14
+          }
+        ]
+      }
+    },
+    "pivotTable": {
+      "*": {
+        "columnHeaders": [
+          {
+            "fontSize": 14
+          }
+        ],
+        "rowHeaders": [
+          {
+            "fontSize": 14
+          }
+        ],
+        "values": [
+          {
+            "fontSize": 14
+          }
+        ],
+        "total": [
+          {
+            "fontSize": 14
+          }
+        ]
+      }
+    },
+    "cardVisual": {
+      "*": {
+        "label": [
+          {
+            "fontSize": 16
+          }
+        ],
+        "referenceLabelTitle": [
+          {
+            "titleFontSize": 14
+          }
+        ],
+        "referenceLabelValue": [
+          {
+            "valueFontSize": 14
+          }
+        ],
+        "referenceLabelDetail": [
+          {
+            "detailFontSize": 14
+          }
+        ]
+      }
+    },
+    "pageNavigator": {
+      "*": {
+        "text": [
+          {
+            "fontSize": 14
+          }
+        ]
+      }
+    }
+  }
+}

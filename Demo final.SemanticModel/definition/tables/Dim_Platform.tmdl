@@ -1,0 +1,35 @@
+table Dim_Platform
+	lineageTag: 880e11c5-1a5b-45b1-b1fa-4239e427c4d3
+
+	column PlatformKey
+		dataType: int64
+		isHidden
+		lineageTag: b7cbc052-4e99-4576-9a88-c9d87d0b05fe
+		summarizeBy: none
+		sourceColumn: PlatformKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Platform
+		dataType: string
+		lineageTag: 2467519f-c566-4eb5-bfcc-99aa943e8f6e
+		summarizeBy: none
+		sourceColumn: Platform
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Platform = m
+		mode: import
+		source =
+				let
+				    Source = Source_VGChartz_Raw,
+				    #"Distinct Platform" = Table.Distinct(Table.SelectColumns(Source, {"console"})),
+				    #"Removed Blanks" = Table.SelectRows(#"Distinct Platform", each [console] <> null and [console] <> ""),
+				    #"Sorted" = Table.Sort(#"Removed Blanks", {{"console", Order.Ascending}}),
+				    #"Added Key" = Table.AddIndexColumn(#"Sorted", "PlatformKey", 1, 1, Int64.Type),
+				    #"Renamed" = Table.RenameColumns(#"Added Key", {{"console", "Platform"}})
+				in
+				    #"Renamed"
+
+	annotation PBI_ResultType = Table
+

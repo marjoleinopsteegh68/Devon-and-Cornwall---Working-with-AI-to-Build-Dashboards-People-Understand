@@ -1,0 +1,35 @@
+table Dim_Game
+	lineageTag: c50d8dfa-03ce-4e78-9d92-42101808213f
+
+	column GameKey
+		dataType: int64
+		isHidden
+		lineageTag: c689b2a5-8d25-41da-b04f-40ed74668962
+		summarizeBy: none
+		sourceColumn: GameKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Game Title'
+		dataType: string
+		lineageTag: b9193372-7662-4d16-876e-159c9a921b91
+		summarizeBy: none
+		sourceColumn: Game Title
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Game = m
+		mode: import
+		source =
+				let
+				    Source = Source_VGChartz_Raw,
+				    #"Distinct Game Title" = Table.Distinct(Table.SelectColumns(Source, {"title"})),
+				    #"Removed Blanks" = Table.SelectRows(#"Distinct Game Title", each [title] <> null and [title] <> ""),
+				    #"Sorted" = Table.Sort(#"Removed Blanks", {{"title", Order.Ascending}}),
+				    #"Added Key" = Table.AddIndexColumn(#"Sorted", "GameKey", 1, 1, Int64.Type),
+				    #"Renamed" = Table.RenameColumns(#"Added Key", {{"title", "Game Title"}})
+				in
+				    #"Renamed"
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,26 @@
+table Genre
+	lineageTag: f0f2ee57-b9bc-49e9-b189-1e41ceacce7c
+
+	column GenreKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: a7fd1411-6580-439d-9e39-04e885ff6e81
+		sourceColumn: GenreKey
+
+	column Genre
+		dataType: string
+		lineageTag: c8b85b94-2dbc-4577-b0aa-fdf33f3e39ad
+		sourceColumn: Genre
+
+	partition Genre = m
+		mode: import
+		source =
+				let
+				    Source = #"VG Bron",
+				    Selected = Table.Distinct(Table.SelectColumns(Source, {"GenreKey", "genre"})),
+				    Renamed = Table.RenameColumns(Selected, {{"genre", "Genre"}}),
+				    Sorted = Table.Sort(Renamed, {{"GenreKey", Order.Ascending}})
+				in
+				    Sorted
+

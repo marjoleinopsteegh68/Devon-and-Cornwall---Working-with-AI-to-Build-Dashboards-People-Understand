@@ -1,0 +1,72 @@
+table Sales
+	lineageTag: 64c29e81-8f50-444a-a65a-23737bc43824
+
+	/// Total sales in millions of units (sum over regions; replaces total_sales column)
+	measure 'Total Sales' = SUM(Sales[Sales])
+		formatString: #,##0.00
+		lineageTag: b314bbaa-3c5b-4027-86d3-a32b8969938d
+
+	column GameKey
+		dataType: int64
+		isHidden
+		lineageTag: 886862d7-79ba-4683-876a-c3831eb5637c
+		sourceColumn: GameKey
+
+	column ConsoleKey
+		dataType: int64
+		isHidden
+		lineageTag: 042fa84f-b2e8-4a3d-968a-d9d8c141b187
+		sourceColumn: ConsoleKey
+
+	column GenreKey
+		dataType: int64
+		isHidden
+		lineageTag: 54b09706-a2d1-4d79-a0fd-ec955f463500
+		sourceColumn: GenreKey
+
+	column PublisherKey
+		dataType: int64
+		isHidden
+		lineageTag: 8b16001e-a2bb-4465-9e09-6d8d0e46b2a9
+		sourceColumn: PublisherKey
+
+	column DeveloperKey
+		dataType: int64
+		isHidden
+		lineageTag: 909a83b1-1490-485c-826f-edfb82f27863
+		sourceColumn: DeveloperKey
+
+	column RegionKey
+		dataType: int64
+		isHidden
+		lineageTag: e0a4de0e-be9f-4574-a8a7-e218bb40eb66
+		sourceColumn: RegionKey
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: b724a8d2-3adc-4920-bb61-1abcd3a96097
+		sourceColumn: DateKey
+
+	column Sales
+		dataType: double
+		isHidden
+		lineageTag: 7bdc85d1-feb1-4e13-a9d6-0ce03a8a4679
+		sourceColumn: Sales
+
+	partition Sales = m
+		mode: import
+		source =
+				let
+				    Source = #"VG Bron",
+				    Selected = Table.SelectColumns(Source, {"GameKey", "ConsoleKey", "GenreKey", "PublisherKey", "DeveloperKey", "release_date", "na_sales", "jp_sales", "pal_sales", "other_sales"}),
+				    AddDateKey = Table.AddColumn(Selected, "DateKey", each Date.Year([release_date]) * 10000 + Date.Month([release_date]) * 100 + Date.Day([release_date]), Int64.Type),
+				    RemovedDate = Table.RemoveColumns(AddDateKey, {"release_date"}),
+				    Unpivoted = Table.UnpivotOtherColumns(RemovedDate, {"GameKey", "ConsoleKey", "GenreKey", "PublisherKey", "DeveloperKey", "DateKey"}, "RegionCode", "Sales"),
+				    JoinRegion = Table.NestedJoin(Unpivoted, {"RegionCode"}, #"VG Regio", {"RegionCode"}, "R", JoinKind.LeftOuter),
+				    ExpandRegion = Table.ExpandTableColumn(JoinRegion, "R", {"RegionKey"}),
+				    Final = Table.SelectColumns(ExpandRegion, {"GameKey", "ConsoleKey", "GenreKey", "PublisherKey", "DeveloperKey", "RegionKey", "DateKey", "Sales"}),
+				    Typed = Table.TransformColumnTypes(Final, {{"Sales", type number}, {"RegionKey", Int64.Type}})
+				in
+				    Typed
+

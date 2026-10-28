@@ -1,0 +1,24 @@
+relationship 8a4b5366-260d-4c9a-b534-761358a60b5c
+	fromColumn: Fact_Game_Sales.GameKey
+	toColumn: Dim_Game.GameKey
+
+relationship 2d035b08-63aa-4ff5-8e2e-505da4eced69
+	fromColumn: Fact_Game_Sales.PlatformKey
+	toColumn: Dim_Platform.PlatformKey
+
+relationship a6d6f38e-e4ef-4ca0-899f-43937f2dec2c
+	fromColumn: Fact_Game_Sales.GenreKey
+	toColumn: Dim_Genre.GenreKey
+
+relationship e3bf72ef-ba7c-47ce-8df8-7e1d949723a6
+	fromColumn: Fact_Game_Sales.PublisherKey
+	toColumn: Dim_Publisher.PublisherKey
+
+relationship e20ad715-e18c-4ad5-8b43-d070de8db9e2
+	fromColumn: Fact_Game_Sales.RegionKey
+	toColumn: Dim_Region.RegionKey
+
+relationship fe0b5407-9805-47e5-b946-74dc346eccaa
+	fromColumn: Fact_Game_Sales.DateKey
+	toColumn: Dim_Date.DateKey
+

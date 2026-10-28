@@ -1,0 +1,40 @@
+table Game
+	lineageTag: f0f61a52-4acc-45ce-96bc-7ad9d907ebf2
+
+	column GameKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: 287f7c91-fbe6-4087-a566-9b62d3b85a5b
+		sourceColumn: GameKey
+
+	column Title
+		dataType: string
+		lineageTag: dde37e48-923b-41fe-9f48-90eaa93a0a63
+		sourceColumn: Title
+
+	column Image
+		dataType: string
+		lineageTag: f58446fb-dca4-4b19-ac03-cc3a01c5de4c
+		sourceColumn: Image
+
+	column 'Critic Score'
+		dataType: double
+		lineageTag: bdbf2625-707f-4b54-a96b-fab7b0878392
+		sourceColumn: Critic Score
+
+	column 'Last Update'
+		dataType: dateTime
+		lineageTag: 12bc1ec2-e80b-45cc-b77a-f6d3e28bb8b8
+		sourceColumn: Last Update
+
+	partition Game = m
+		mode: import
+		source =
+				let
+				    Source = #"VG Bron",
+				    Selected = Table.SelectColumns(Source, {"GameKey", "title", "img", "critic_score", "last_update"}),
+				    Renamed = Table.RenameColumns(Selected, {{"title", "Title"}, {"img", "Image"}, {"critic_score", "Critic Score"}, {"last_update", "Last Update"}})
+				in
+				    Renamed
+

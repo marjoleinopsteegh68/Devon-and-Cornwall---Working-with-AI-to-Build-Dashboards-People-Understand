@@ -1,0 +1,35 @@
+table Dim_Publisher
+	lineageTag: e84b8904-4ad0-4a3a-a6e4-99d5bd363a3f
+
+	column PublisherKey
+		dataType: int64
+		isHidden
+		lineageTag: d7279b9c-91d1-4733-b40d-2bbc5530d130
+		summarizeBy: none
+		sourceColumn: PublisherKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Publisher
+		dataType: string
+		lineageTag: 8212770e-0494-4943-b90f-a7af7b71df65
+		summarizeBy: none
+		sourceColumn: Publisher
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Publisher = m
+		mode: import
+		source =
+				let
+				    Source = Source_VGChartz_Raw,
+				    #"Distinct Publisher" = Table.Distinct(Table.SelectColumns(Source, {"publisher"})),
+				    #"Removed Blanks" = Table.SelectRows(#"Distinct Publisher", each [publisher] <> null and [publisher] <> ""),
+				    #"Sorted" = Table.Sort(#"Removed Blanks", {{"publisher", Order.Ascending}}),
+				    #"Added Key" = Table.AddIndexColumn(#"Sorted", "PublisherKey", 1, 1, Int64.Type),
+				    #"Renamed" = Table.RenameColumns(#"Added Key", {{"publisher", "Publisher"}})
+				in
+				    #"Renamed"
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,97 @@
+table Fact_Game_Sales
+	lineageTag: 16496527-bccc-4e62-b674-165be1c1c5cc
+
+	column GameKey
+		dataType: int64
+		isHidden
+		lineageTag: c487a365-0c85-424a-a9f0-e90bfc3cc8dc
+		summarizeBy: none
+		sourceColumn: GameKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column PlatformKey
+		dataType: int64
+		isHidden
+		lineageTag: c10f7689-a68a-456d-83ff-cdf00c011c7d
+		summarizeBy: none
+		sourceColumn: PlatformKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column GenreKey
+		dataType: int64
+		isHidden
+		lineageTag: 6ed442e7-1c5f-4a47-9629-89567a50fad0
+		summarizeBy: none
+		sourceColumn: GenreKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column PublisherKey
+		dataType: int64
+		isHidden
+		lineageTag: d8c5544d-597b-452f-afc5-b4910455f01c
+		summarizeBy: none
+		sourceColumn: PublisherKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column RegionKey
+		dataType: int64
+		isHidden
+		lineageTag: b902dac6-7ba7-4601-b97d-33d853d71624
+		summarizeBy: none
+		sourceColumn: RegionKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: 217b1883-8aad-4cc9-b901-dec75954ade5
+		summarizeBy: none
+		sourceColumn: DateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Units Sold (millions)'
+		dataType: double
+		lineageTag: d18f0d15-930d-4239-bac9-0d680ed09087
+		summarizeBy: sum
+		sourceColumn: Units Sold (millions)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Critic Score'
+		dataType: double
+		lineageTag: 96207bd7-3817-4f46-a07c-78e3c94bf1ae
+		summarizeBy: none
+		sourceColumn: Critic Score
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Fact_Game_Sales = m
+		mode: import
+		source =
+				let
+				    Source = Source_VGChartz_Raw,
+				    // 4 sales columns -> 1 row per game, platform and region
+				    #"Unpivoted Regions" = Table.UnpivotOtherColumns(Table.SelectColumns(Source, {"title", "console", "genre", "publisher", "release_date", "critic_score", "na_sales", "pal_sales", "jp_sales", "other_sales"}), {"title", "console", "genre", "publisher", "release_date", "critic_score"}, "Source Column", "Units Sold (millions)"),
+				    // Data stops in 2018: 2019 is almost empty
+				    #"Filtered Up To 2018" = Table.SelectRows(#"Unpivoted Regions", each [release_date] <> null and [release_date] < #date(2019, 1, 1)),
+				    #"Added DateKey" = Table.AddColumn(#"Filtered Up To 2018", "DateKey", each Number.From(Date.ToText([release_date], "yyyyMMdd")), Int64.Type),
+				    #"Merged Game" = Table.ExpandTableColumn(Table.NestedJoin(#"Added DateKey", {"title"}, Dim_Game, {"Game Title"}, "G", JoinKind.LeftOuter), "G", {"GameKey"}),
+				    #"Merged Platform" = Table.ExpandTableColumn(Table.NestedJoin(#"Merged Game", {"console"}, Dim_Platform, {"Platform"}, "P", JoinKind.LeftOuter), "P", {"PlatformKey"}),
+				    #"Merged Genre" = Table.ExpandTableColumn(Table.NestedJoin(#"Merged Platform", {"genre"}, Dim_Genre, {"Genre"}, "Ge", JoinKind.LeftOuter), "Ge", {"GenreKey"}),
+				    #"Merged Publisher" = Table.ExpandTableColumn(Table.NestedJoin(#"Merged Genre", {"publisher"}, Dim_Publisher, {"Publisher"}, "Pu", JoinKind.LeftOuter), "Pu", {"PublisherKey"}),
+				    Regions = #table(type table [RegionKey = Int64.Type, #"Source Column" = text], {{1, "na_sales"}, {2, "pal_sales"}, {3, "jp_sales"}, {4, "other_sales"}}),
+				    #"Merged Region" = Table.ExpandTableColumn(Table.NestedJoin(#"Merged Publisher", {"Source Column"}, Regions, {"Source Column"}, "R", JoinKind.LeftOuter), "R", {"RegionKey"}),
+				    #"Renamed" = Table.RenameColumns(#"Merged Region", {{"critic_score", "Critic Score"}}),
+				    #"Selected Columns" = Table.SelectColumns(#"Renamed", {"GameKey", "PlatformKey", "GenreKey", "PublisherKey", "RegionKey", "DateKey", "Units Sold (millions)", "Critic Score"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Selected Columns", {{"Units Sold (millions)", type number}, {"Critic Score", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

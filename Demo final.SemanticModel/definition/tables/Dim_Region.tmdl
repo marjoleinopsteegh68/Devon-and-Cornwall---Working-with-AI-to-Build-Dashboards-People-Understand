@@ -1,0 +1,36 @@
+table Dim_Region
+	lineageTag: e05b7e1f-f01d-4a4c-9baf-f151c4b11c72
+
+	column RegionKey
+		dataType: int64
+		isHidden
+		lineageTag: 93d31574-d19d-4bb6-a8c3-66cfee31402f
+		summarizeBy: none
+		sourceColumn: RegionKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Region
+		dataType: string
+		lineageTag: e75833ed-3590-410e-b745-127b38111610
+		summarizeBy: none
+		sourceColumn: Region
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Region = m
+		mode: import
+		source =
+				let
+				    Source = #table(type table [RegionKey = Int64.Type, Region = text, #"Source Column" = text], {
+				        {1, "North America", "na_sales"},
+				        {2, "Europe", "pal_sales"},
+				        {3, "Japan", "jp_sales"},
+				        {4, "Rest of World", "other_sales"}
+				    }),
+				    #"Removed Source Column" = Table.RemoveColumns(Source, {"Source Column"})
+				in
+				    #"Removed Source Column"
+
+	annotation PBI_ResultType = Table
+

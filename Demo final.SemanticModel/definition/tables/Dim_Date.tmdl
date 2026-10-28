@@ -1,0 +1,86 @@
+table Dim_Date
+	lineageTag: b69d3a97-c5b8-44cf-a90c-816c97a7a6e5
+	dataCategory: Time
+
+	column DateKey
+		dataType: int64
+		isHidden
+		lineageTag: 2cbec69b-a924-4b7d-8cb7-f1bbce725381
+		summarizeBy: none
+		sourceColumn: DateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: Short Date
+		lineageTag: 480ccce2-499c-4cbf-afb9-c254f9b44f38
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Year
+		dataType: int64
+		lineageTag: 43fcd483-f101-482b-a398-6f90430c0d0c
+		summarizeBy: none
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter
+		dataType: string
+		lineageTag: 7b598a2f-c8f1-42c5-b326-d9cadcd69368
+		summarizeBy: none
+		sourceColumn: Quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Number'
+		dataType: int64
+		isHidden
+		lineageTag: 87442bf4-73f1-4473-bb9e-cda71cfaeda5
+		summarizeBy: none
+		sourceColumn: Month Number
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		dataType: string
+		lineageTag: 82a5473a-c043-44f7-8ee2-bead762553e4
+		summarizeBy: none
+		sourceColumn: Month
+		sortByColumn: 'Month Number'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Decade
+		dataType: string
+		lineageTag: 1dbc3892-8632-4355-91c0-18611ea1388e
+		summarizeBy: none
+		sourceColumn: Decade
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Date = m
+		mode: import
+		source =
+				let
+				    StartDate = #date(1977, 1, 1),
+				    EndDate = #date(2018, 12, 31),
+				    Dates = List.Dates(StartDate, Duration.Days(EndDate - StartDate) + 1, #duration(1, 0, 0, 0)),
+				    #"To Table" = Table.FromList(Dates, Splitter.SplitByNothing(), type table [Date = date]),
+				    #"Added DateKey" = Table.AddColumn(#"To Table", "DateKey", each Number.From(Date.ToText([Date], "yyyyMMdd")), Int64.Type),
+				    #"Added Year" = Table.AddColumn(#"Added DateKey", "Year", each Date.Year([Date]), Int64.Type),
+				    #"Added Quarter" = Table.AddColumn(#"Added Year", "Quarter", each "Q" & Text.From(Date.QuarterOfYear([Date])), type text),
+				    #"Added Month Number" = Table.AddColumn(#"Added Quarter", "Month Number", each Date.Month([Date]), Int64.Type),
+				    #"Added Month" = Table.AddColumn(#"Added Month Number", "Month", each Date.ToText([Date], "MMM", "en-US"), type text),
+				    #"Added Decade" = Table.AddColumn(#"Added Month", "Decade", each Text.From(Number.RoundDown([Year] / 10) * 10) & "s", type text)
+				in
+				    #"Added Decade"
+
+	annotation PBI_ResultType = Table
+

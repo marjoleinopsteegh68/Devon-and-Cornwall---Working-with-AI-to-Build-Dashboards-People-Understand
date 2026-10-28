@@ -1,0 +1,36 @@
+/// Staging: CSV, release date up to 2018, surrogate keys (not loaded)
+expression 'VG Bron' =
+		let
+		    Source = Csv.Document(File.Contents("C:\Users\mopsteegh\OneDrive - ilionx Group BV\08. Trainingen\Dataset video games\Data video games\vgchartz-2024.csv"),[Delimiter=",", Columns=14, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+		    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+		    Typed = Table.TransformColumnTypes(Promoted,{{"img", type text}, {"title", type text}, {"console", type text}, {"genre", type text}, {"publisher", type text}, {"developer", type text}, {"critic_score", type number}, {"total_sales", type number}, {"na_sales", type number}, {"jp_sales", type number}, {"pal_sales", type number}, {"other_sales", type number}, {"release_date", type date}, {"last_update", type date}}, "en-US"),
+		    UpTo2018 = Table.SelectRows(Typed, each [release_date] <> null and [release_date] <= #date(2018, 12, 31)),
+		    FillUnknown = Table.TransformColumns(UpTo2018, List.Transform({"console", "genre", "publisher", "developer"}, (c) => {c, each if _ = null or Text.Trim(_) = "" then "Unknown" else _, type text})),
+		    WithGameKey = Table.AddIndexColumn(FillUnknown, "GameKey", 1, 1, Int64.Type),
+		    AddKey = (tbl as table, col as text, keyName as text) as table =>
+		        let
+		            Dim = Table.AddIndexColumn(Table.Sort(Table.Distinct(Table.SelectColumns(tbl, {col})), {{col, Order.Ascending}}), keyName, 1, 1, Int64.Type),
+		            Joined = Table.NestedJoin(tbl, {col}, Dim, {col}, "__k", JoinKind.LeftOuter)
+		        in
+		            Table.ExpandTableColumn(Joined, "__k", {keyName}),
+		    K1 = AddKey(WithGameKey, "console", "ConsoleKey"),
+		    K2 = AddKey(K1, "genre", "GenreKey"),
+		    K3 = AddKey(K2, "publisher", "PublisherKey"),
+		    K4 = AddKey(K3, "developer", "DeveloperKey")
+		in
+		    K4
+	lineageTag: 84ece88f-cab5-40d1-a805-f283c7bf9a1d
+
+/// Region mapping for unpivoted sales columns
+expression 'VG Regio' =
+		#table(
+		    type table [RegionKey = Int64.Type, RegionCode = text, Region = text],
+		    {
+		        {1, "na_sales", "North America"},
+		        {2, "jp_sales", "Japan"},
+		        {3, "pal_sales", "PAL (Europe & Oceania)"},
+		        {4, "other_sales", "Other"}
+		    }
+		)
+	lineageTag: df73a145-d813-4dce-b74b-739703a06e7d
+
