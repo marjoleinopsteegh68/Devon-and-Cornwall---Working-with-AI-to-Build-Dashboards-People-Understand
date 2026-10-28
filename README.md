@@ -2,7 +2,7 @@
 
 Material from a live demo session for the Devon & Cornwall Power BI User Group, showing how to build a Power BI report end-to-end with an AI coding agent (Claude Code) instead of building it by hand: turning one flat CSV export into a star-schema model with measures, a themed report and interactive navigation.
 
-The dataset is video game sales (`vgchartz-2024.csv`, ~64,000 rows) — not included in this repo, see [Data](#data) below.
+The dataset is video game sales (`vgchartz-2024.csv`, ~64,000 rows), included in this repo — see [Data](#data) below.
 
 ## What's in this repo
 
@@ -14,17 +14,20 @@ The dataset is video game sales (`vgchartz-2024.csv`, ~64,000 rows) — not incl
 | `CLAUDE.md` | The instructions given to the AI agent for this project — how it should work with the semantic model and the report |
 | `Screenshot page by Claude.png` | The same report page, built with Claude Code |
 | `Screenshot page by Git Hub Copilot*.png` | The same report page, built with GitHub Copilot, for comparison |
+| `vgchartz-2024.csv` | The source dataset |
+| `vg_data_dictionary.csv` | Column descriptions for the source dataset |
 
 ## Using this yourself
 
-1. Get the source data (the VGChartz 2024 video game sales export, `vgchartz-2024.csv`) and update the Power Query source step to point at your own copy — the file itself isn't part of this repo.
-2. Open any `.pbip` file in Power BI Desktop and click **Refresh**; the data isn't stored in the project files, only the model and report definitions are.
+1. Open any `.pbip` file in Power BI Desktop. Each one opens with its full dataset already loaded from the cached semantic model — no setup needed.
+2. Click **Refresh** if you want Power BI to re-pull the data through its original Power Query source step; this will fail unless you first point that step at your own local copy of `vgchartz-2024.csv` (from this repo), since the original file path is local to the original author's machine.
 3. Open `Demo live.pbip` to start from the raw flat table, or `Demo final.pbip` to see the end result directly.
 4. `CLAUDE.md` shows the actual working instructions used to drive the build with Claude Code.
+5. From here you can do anything you'd do with your own Power BI file: explore the data, change the model, rebuild the report, export the data, or use it as a starting point for your own dashboard.
 
 ## Data
 
-The dataset used is a video game sales export (`vgchartz-2024.csv`, 64,016 rows, 14 columns: title, platform, genre, publisher, regional and global sales, critic score, release date). It is not included in this repo; source your own copy and point the model's Power Query source at it before refreshing.
+The dataset is a video game sales export (`vgchartz-2024.csv`, 64,016 rows, 14 columns: title, platform, genre, publisher, regional and global sales, critic score, release date), with `vg_data_dictionary.csv` describing each column. It's also cached inside each `.SemanticModel/.pbi/cache.abf`, so it travels with the `.pbip` files and loads automatically when you open them.
 
 ## Notes
 
